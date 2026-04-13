@@ -26,6 +26,7 @@ body {
     linear-gradient(160deg, #c8b792 0%, #e8ddc8 45%, #c3cfab 100%);
   color: var(--ink);
   font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+  touch-action: manipulation;
 }
 
 .app {
@@ -78,6 +79,7 @@ canvas {
   display: block;
   width: 100%;
   height: auto;
+  max-height: 70vh;
   border-radius: 18px;
   background: linear-gradient(180deg, var(--field), var(--field-shadow));
   box-shadow: 0 22px 45px rgba(41, 58, 46, 0.28);
@@ -145,6 +147,8 @@ canvas {
   font-weight: 700;
   touch-action: manipulation;
   user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .control-btn:active,
@@ -168,21 +172,42 @@ canvas {
 }
 
 @media (max-width: 720px) {
+  body {
+    padding: 10px 0 18px;
+    align-items: start;
+  }
+
+  .app {
+    width: calc(100vw - 16px);
+  }
+
   .panel {
     flex-direction: column;
     align-items: flex-start;
+    margin-bottom: 10px;
+    padding: 14px 16px;
   }
 
   .panel h1 {
-    font-size: 28px;
+    font-size: 24px;
   }
 
   .stats {
-    font-size: 16px;
+    font-size: 15px;
+  }
+
+  .stage {
+    padding: 10px;
+  }
+
+  canvas {
+    max-height: 52vh;
   }
 
   .controls {
-    margin-top: 16px;
+    margin-top: 12px;
+    position: sticky;
+    bottom: 8px;
   }
 }
 
@@ -194,19 +219,41 @@ canvas {
 
 @media (max-width: 540px) {
   .dpad {
-    grid-template-columns: repeat(3, 60px);
-    grid-template-rows: repeat(3, 60px);
-    gap: 8px;
+    grid-template-columns: repeat(3, 54px);
+    grid-template-rows: repeat(3, 54px);
+    gap: 7px;
   }
 
   .control-btn {
-    font-size: 24px;
-    border-radius: 16px;
+    font-size: 22px;
+    border-radius: 15px;
   }
 
   .fire {
-    min-width: 104px;
-    min-height: 104px;
-    font-size: 24px;
+    min-width: 96px;
+    min-height: 96px;
+    font-size: 22px;
+  }
+}
+
+@media (max-width: 420px) {
+  canvas {
+    max-height: 46vh;
+  }
+
+  .controls {
+    gap: 12px;
+  }
+
+  .dpad {
+    grid-template-columns: repeat(3, 48px);
+    grid-template-rows: repeat(3, 48px);
+    gap: 6px;
+  }
+
+  .fire {
+    min-width: 88px;
+    min-height: 88px;
+    font-size: 20px;
   }
 }

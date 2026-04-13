@@ -407,11 +407,15 @@ function setActionState(action, pressed) {
 function bindControlButton(button) {
   const action = button.dataset.action;
   const press = (event) => {
-    event.preventDefault();
+    if (event.cancelable) {
+      event.preventDefault();
+    }
     setActionState(action, true);
   };
   const release = (event) => {
-    event.preventDefault();
+    if (event.cancelable) {
+      event.preventDefault();
+    }
     setActionState(action, false);
   };
 
@@ -419,7 +423,17 @@ function bindControlButton(button) {
   button.addEventListener("pointerup", release);
   button.addEventListener("pointerleave", release);
   button.addEventListener("pointercancel", release);
+  button.addEventListener("touchstart", press, { passive: false });
+  button.addEventListener("touchend", release, { passive: false });
+  button.addEventListener("touchcancel", release, { passive: false });
+  button.addEventListener("mousedown", press);
+  button.addEventListener("mouseup", release);
 }
+
+window.addEventListener("blur", () => {
+  keys.clear();
+  controlButtons.forEach((button) => button.classList.remove("active"));
+});
 
 function updateBullets(dt) {
   for (let i = state.bullets.length - 1; i >= 0; i -= 1) {
