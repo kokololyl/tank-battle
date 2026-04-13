@@ -7,10 +7,12 @@ const enemiesEl = document.getElementById("enemies");
 const overlayEl = document.getElementById("overlay");
 const overlayTitleEl = document.getElementById("overlay-title");
 const overlayTextEl = document.getElementById("overlay-text");
+const controlButtons = Array.from(document.querySelectorAll(".control-btn"));
 
 const TILE = 30;
 const keys = new Set();
 const walls = [];
+let audioContext = null;
 
 const state = {
   score: 0,
@@ -21,6 +23,14 @@ const state = {
   bullets: [],
   enemyCooldown: 0,
   lastTime: 0,
+};
+
+const actionKeyMap = {
+  up: "ArrowUp",
+  down: "ArrowDown",
+  left: "ArrowLeft",
+  right: "ArrowRight",
+  fire: "Space",
 };
 
 class Tank {
@@ -50,6 +60,69 @@ class Bullet {
     this.owner = owner;
     this.radius = 4;
   }
+}
+
+function ensureAudioContext() {
+  if (!audioContext) {
+    const AudioContextCtor = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContextCtor) {
+      return null;
+    }
+    audioContext = new AudioContextCtor();
+  }
+
+  if (audioContext.state === "suspended") {
+    audioContext.resume().catch(() => {});
+  }
+
+  return audioContext;
+}
+
+function playSound(type) {
+  const ctxAudio = ensureAudioContext();
+  if (!ctxAudio) {
+    return;
+  }
+
+  const now = ctxAudio.currentTime;
+  const oscillator = ctxAudio.createOscillator();
+  const gain = ctxAudio.createGain();
+
+  oscillator.connect(gain);
+  gain.connect(ctxAudio.destination);
+
+  if (type === "shoot") {
+    oscillator.type = "square";
+    oscillator.frequency.setValueAtTime(320, now);
+    oscillator.frequency.exponentialRampToValueAtTime(110, now + 0.08);
+    gain.gain.setValueAtTime(0.001, now);
+    gain.gain.exponentialRampToValueAtTime(0.07, now + 0.01);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+    oscillator.start(now);
+    oscillator.stop(now + 0.09);
+    return;
+  }
+
+  if (type === "hit") {
+    oscillator.type = "triangle";
+    oscillator.frequency.setValueAtTime(220, now);
+    oscillator.frequency.exponentialRampToValueAtTime(70, now + 0.12);
+    gain.gain.setValueAtTime(0.001, now);
+    gain.gain.exponentialRampToValueAtTime(0.09, now + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.14);
+    oscillator.start(now);
+    oscillator.stop(now + 0.15);
+    return;
+  }
+
+  oscillator.type = "sine";
+  oscillator.frequency.setValueAtTime(520, now);
+  oscillator.frequency.exponentialRampToValueAtTime(820, now + 0.08);
+  gain.gain.setValueAtTime(0.001, now);
+  gain.gain.exponentialRampToValueAtTime(0.06, now + 0.01);
+  gain.gain.exponentialRampToValueAtTime(0.001, now + 0.16);
+  oscillator.start(now);
+  oscillator.stop(now + 0.18);
 }
 
 function buildWalls() {
@@ -185,6 +258,9 @@ function shoot(tank) {
 
   state.bullets.push(bullet);
   tank.reload = tank.isPlayer ? 0.32 : 0.9 + Math.random() * 0.6;
+  if (tank.isPlayer) {
+    playSound("shoot");
+  }
 }
 
 function updatePlayer(dt) {
@@ -286,6 +362,7 @@ function damageWall(wall) {
 }
 
 function hitTank(tank) {
+  playSound(tank.isPlayer ? "hit" : "explode");
   if (tank.isPlayer) {
     state.lives -= 1;
     if (state.lives <= 0) {
@@ -305,6 +382,43 @@ function hitTank(tank) {
     }
   }
   syncStats();
+}
+
+function setActionState(action, pressed) {
+  const key = actionKeyMap[action];
+  if (!key) {
+    return;
+  }
+
+  ensureAudioContext();
+
+  if (pressed) {
+    keys.add(key);
+  } else {
+    keys.delete(key);
+  }
+
+  const button = document.querySelector(`[data-action="${action}"]`);
+  if (button) {
+    button.classList.toggle("active", pressed);
+  }
+}
+
+function bindControlButton(button) {
+  const action = button.dataset.action;
+  const press = (event) => {
+    event.preventDefault();
+    setActionState(action, true);
+  };
+  const release = (event) => {
+    event.preventDefault();
+    setActionState(action, false);
+  };
+
+  button.addEventListener("pointerdown", press);
+  button.addEventListener("pointerup", release);
+  button.addEventListener("pointerleave", release);
+  button.addEventListener("pointercancel", release);
 }
 
 function updateBullets(dt) {
@@ -459,6 +573,7 @@ function loop(timestamp) {
 window.addEventListener("keydown", (event) => {
   if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Space"].includes(event.code)) {
     event.preventDefault();
+    ensureAudioContext();
     keys.add(event.code === "Space" ? "Space" : event.key);
   }
 
@@ -472,6 +587,8 @@ window.addEventListener("keyup", (event) => {
     keys.delete(event.code === "Space" ? "Space" : event.key);
   }
 });
+
+controlButtons.forEach(bindControlButton);
 
 resetGame();
 requestAnimationFrame(loop);

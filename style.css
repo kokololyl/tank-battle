@@ -110,6 +110,63 @@ canvas {
   display: none;
 }
 
+.controls {
+  margin-top: 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 18px;
+}
+
+.dpad {
+  display: grid;
+  grid-template-columns: repeat(3, 72px);
+  grid-template-rows: repeat(3, 72px);
+  gap: 10px;
+  grid-template-areas:
+    ". up ."
+    "left . right"
+    ". down .";
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.control-btn {
+  border: 0;
+  border-radius: 20px;
+  background: linear-gradient(180deg, rgba(41, 60, 49, 0.95), rgba(23, 34, 28, 0.95));
+  color: #fff5dd;
+  box-shadow: 0 10px 22px rgba(23, 36, 29, 0.24);
+  font-size: 28px;
+  font-weight: 700;
+  touch-action: manipulation;
+  user-select: none;
+}
+
+.control-btn:active,
+.control-btn.active {
+  transform: translateY(1px) scale(0.98);
+  background: linear-gradient(180deg, rgba(95, 129, 98, 0.96), rgba(45, 66, 53, 0.96));
+}
+
+.up { grid-area: up; }
+.left { grid-area: left; }
+.right { grid-area: right; }
+.down { grid-area: down; }
+
+.fire {
+  min-width: 132px;
+  min-height: 132px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(181, 65, 47, 0.96), rgba(122, 35, 24, 0.96));
+  font-size: 30px;
+  letter-spacing: 2px;
+}
+
 @media (max-width: 720px) {
   .panel {
     flex-direction: column;
@@ -122,5 +179,34 @@ canvas {
 
   .stats {
     font-size: 16px;
+  }
+
+  .controls {
+    margin-top: 16px;
+  }
+}
+
+@media (min-width: 901px) {
+  .controls {
+    display: none;
+  }
+}
+
+@media (max-width: 540px) {
+  .dpad {
+    grid-template-columns: repeat(3, 60px);
+    grid-template-rows: repeat(3, 60px);
+    gap: 8px;
+  }
+
+  .control-btn {
+    font-size: 24px;
+    border-radius: 16px;
+  }
+
+  .fire {
+    min-width: 104px;
+    min-height: 104px;
+    font-size: 24px;
   }
 }
