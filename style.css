@@ -1,0 +1,126 @@
+:root {
+  --bg: #e8ddc8;
+  --panel: #20332a;
+  --panel-accent: #d6b36a;
+  --ink: #1c1c1c;
+  --field: #758b5a;
+  --field-shadow: #516440;
+  --wall: #8c4f2f;
+  --steel: #75808b;
+  --enemy: #b9412f;
+  --player: #265c7c;
+  --shell: #f8f0d8;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(circle at top, rgba(255, 240, 200, 0.75), transparent 35%),
+    linear-gradient(160deg, #c8b792 0%, #e8ddc8 45%, #c3cfab 100%);
+  color: var(--ink);
+  font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+.app {
+  width: min(960px, calc(100vw - 24px));
+}
+
+.panel {
+  margin-bottom: 16px;
+  padding: 16px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, rgba(32, 51, 42, 0.94), rgba(58, 83, 67, 0.9));
+  color: #f7f2e8;
+  box-shadow: 0 14px 30px rgba(23, 36, 29, 0.22);
+}
+
+.panel h1 {
+  margin: 0 0 6px;
+  font-size: 32px;
+}
+
+.panel p {
+  margin: 0;
+  color: rgba(247, 242, 232, 0.82);
+}
+
+.stats {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+  font-size: 18px;
+}
+
+.stats strong {
+  color: var(--panel-accent);
+}
+
+.stage {
+  position: relative;
+  padding: 14px;
+  border-radius: 24px;
+  background: rgba(30, 42, 35, 0.14);
+  box-shadow: inset 0 0 0 1px rgba(32, 51, 42, 0.08);
+}
+
+canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 18px;
+  background: linear-gradient(180deg, var(--field), var(--field-shadow));
+  box-shadow: 0 22px 45px rgba(41, 58, 46, 0.28);
+}
+
+.overlay {
+  position: absolute;
+  inset: 14px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 10px;
+  border-radius: 18px;
+  background: rgba(14, 19, 16, 0.62);
+  color: #fff8ea;
+  text-align: center;
+}
+
+.overlay h2 {
+  margin: 0;
+  font-size: 42px;
+}
+
+.overlay p {
+  margin: 0;
+  font-size: 20px;
+}
+
+.hidden {
+  display: none;
+}
+
+@media (max-width: 720px) {
+  .panel {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .panel h1 {
+    font-size: 28px;
+  }
+
+  .stats {
+    font-size: 16px;
+  }
+}
