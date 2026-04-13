@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>坦克大战</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <main class="app">
+    <section class="panel">
+      <div>
+        <h1>坦克大战</h1>
+        <p>方向键移动，空格射击，R 重新开始。</p>
+      </div>
+      <div class="stats">
+        <span>分数：<strong id="score">0</strong></span>
+        <span>生命：<strong id="lives">3</strong></span>
+        <span>敌人：<strong id="enemies">0</strong></span>
+      </div>
+    </section>
+    <section class="stage">
+      <canvas id="game" width="900" height="600" aria-label="坦克大战游戏画布"></canvas>
+      <div id="overlay" class="overlay hidden">
+        <h2 id="overlay-title"></h2>
+        <p id="overlay-text"></p>
+      </div>
+    </section>
+  </main>
+  <script src="./game.js"></script>
+</body>
+</html>
